@@ -2,7 +2,7 @@ name: Update Custom Spotify Widget
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # 10분마다 실행
+    - cron: '*/10 * * * *'  # 10분마다 실행 (5개 필드 필요!)
   workflow_dispatch:  # 수동 실행 가능
 
 # 권한 추가!
@@ -34,19 +34,10 @@ jobs:
         SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
         SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
         
-    - name: Pull latest changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git pull origin main --rebase
-        
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git stash  # 변경사항 임시 저장
-        git pull origin main --rebase  # 최신 변경사항 가져오기
-        git stash pop  # 변경사항 다시 적용
         git add .
         git commit -m "🎵 Update Spotify widget" || echo "변경사항 없음"
-        git push origin main
+        git push origin main --force-with-lease
