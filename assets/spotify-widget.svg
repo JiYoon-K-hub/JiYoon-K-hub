@@ -20,9 +20,9 @@
       
       <!-- 곡 정보 -->
       <text x="120" y="25" class="status">🎵 Now Playing</text>
-      <text x="120" y="45" class="title">L-Shaped Couch</text>
-      <text x="120" y="65" class="artist">by Scene Queen</text>
-      <text x="120" y="85" class="album">L-Shaped Couch</text>
+      <text x="120" y="45" class="title">Oh No!</text>
+      <text x="120" y="65" class="artist">by MARINA</text>
+      <text x="120" y="85" class="album">The Family Jewels</text>
       
       <!-- 재생 중일 때 애니메이션 -->
       
