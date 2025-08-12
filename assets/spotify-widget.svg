@@ -20,9 +20,9 @@
       
       <!-- 곡 정보 -->
       <text x="120" y="25" class="status">🎵 Now Playing</text>
-      <text x="120" y="45" class="title">Waste</text>
-      <text x="120" y="65" class="artist">by Profiler</text>
-      <text x="120" y="85" class="album">Waste</text>
+      <text x="120" y="45" class="title">TAKEDOWN (JEONGYEON, JIHY...</text>
+      <text x="120" y="65" class="artist">by TWICE</text>
+      <text x="120" y="85" class="album">KPop Demon Hunters (Soundtrack...</text>
       
       <!-- 재생 중일 때 애니메이션 -->
       
