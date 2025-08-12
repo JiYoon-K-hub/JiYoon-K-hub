@@ -50,3 +50,7 @@ jobs:
         commit_user_name: GitHub Action
         commit_user_email: action@github.com
         skip_dirty_check: true
+        skip_fetch: false
+        skip_checkout: false
+        disable_globbing: true
+        push_options: '--force'  # 이 줄 추가!
