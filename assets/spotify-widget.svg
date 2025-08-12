@@ -1,8 +1,34 @@
 
-      <svg width="400" height="120" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#1a1a1a" rx="8"/>
-        <text x="20" y="60" font-family="Segoe UI, Arial, sans-serif" font-size="16px" fill="#ffffff">
-          🎵 Not playing anything
-        </text>
-      </svg>
-    
+    <svg width="400" height="120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <style>
+          .bg { fill: #1a1a1a; }
+          .title { font-family: Segoe UI, Arial, sans-serif; font-size: 16px; fill: #ffffff; font-weight: bold; }
+          .artist { font-family: Segoe UI, Arial, sans-serif; font-size: 14px; fill: #cccccc; }
+          .album { font-family: Segoe UI, Arial, sans-serif; font-size: 12px; fill: #888888; }
+          .status { font-family: Segoe UI, Arial, sans-serif; font-size: 12px; fill: #1db954; }
+          .link { cursor: pointer; }
+        </style>
+      </defs>
+      
+      <!-- 배경 -->
+      <rect width="100%" height="100%" class="bg" rx="8"/>
+      
+      <!-- 앨범 커버 (placeholder) -->
+      <rect x="15" y="15" width="90" height="90" fill="#333" rx="4"/>
+      <text x="60" y="65" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="30px" fill="#666">🎵</text>
+      
+      <!-- 곡 정보 -->
+      <text x="120" y="25" class="status">🎵 Now Playing</text>
+      <text x="120" y="45" class="title">L-Shaped Couch</text>
+      <text x="120" y="65" class="artist">by Scene Queen</text>
+      <text x="120" y="85" class="album">L-Shaped Couch</text>
+      
+      <!-- 재생 중일 때 애니메이션 -->
+      
+        <circle cx="370" cy="25" r="4" fill="#1db954">
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      
+    </svg>
+  
