@@ -5,6 +5,10 @@ on:
     - cron: '*/10 * * * *'  # 10분마다 실행
   workflow_dispatch:  # 수동 실행 가능
 
+# 권한 추가!
+permissions:
+  contents: write
+
 jobs:
   update-spotify:
     runs-on: ubuntu-latest
