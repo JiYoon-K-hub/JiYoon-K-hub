@@ -41,16 +41,9 @@ jobs:
         git pull origin main --rebase
         
     - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: "🎵 Update Spotify widget"
-        branch: main
-        commit_options: '--no-verify --signoff'
-        repository: .
-        commit_user_name: GitHub Action
-        commit_user_email: action@github.com
-        skip_dirty_check: true
-        skip_fetch: false
-        skip_checkout: false
-        disable_globbing: true
-        push_options: '--force'  # 이 줄 추가!
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "🎵 Update Spotify widget" || echo "변경사항 없음"
+        git push origin main --force-with-lease
