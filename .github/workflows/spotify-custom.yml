@@ -42,4 +42,3 @@ jobs:
         message: '🎵 Update Spotify widget'
         add: 'assets/spotify-widget.svg'
         push: true
-        pull: '--rebase --autostash'
