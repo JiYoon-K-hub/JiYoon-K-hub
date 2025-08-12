@@ -60,7 +60,6 @@ async function getCurrentTrack(accessToken) {
     
     console.log('📊 현재 재생 API 응답 상태:', response.status);
     
-    // 204 상태코드는 재생 중인 곡이 없음을 의미
     if (response.status === 204) {
       console.log('ℹ️  현재 재생 중인 곡 없음 (204 응답)');
       return null;
@@ -70,6 +69,7 @@ async function getCurrentTrack(accessToken) {
       console.log('✅ 현재 재생 중인 곡 발견:');
       console.log(`   곡명: ${response.data.item.name}`);
       console.log(`   아티스트: ${response.data.item.artists[0].name}`);
+      console.log(`   앨범 커버: ${response.data.item.album.images[0]?.url || '없음'}`);
       console.log(`   재생 상태: ${response.data.is_playing ? '재생 중' : '일시정지'}`);
       
       return {
@@ -83,7 +83,6 @@ async function getCurrentTrack(accessToken) {
     }
     
     console.log('ℹ️  응답은 왔지만 곡 데이터가 없음');
-    console.log('📊 응답 데이터:', JSON.stringify(response.data, null, 2));
     return null;
   } catch (error) {
     console.error('❌ 현재 재생 곡 API 오류:');
@@ -111,6 +110,7 @@ async function getRecentTrack(accessToken) {
       console.log('✅ 최근 재생한 곡 발견:');
       console.log(`   곡명: ${track.name}`);
       console.log(`   아티스트: ${track.artists[0].name}`);
+      console.log(`   앨범 커버: ${track.album.images[0]?.url || '없음'}`);
       console.log(`   재생 시간: ${response.data.items[0].played_at}`);
       
       return {
@@ -124,7 +124,6 @@ async function getRecentTrack(accessToken) {
     }
     
     console.log('ℹ️  최근 재생한 곡이 없음');
-    console.log('📊 응답 데이터:', JSON.stringify(response.data, null, 2));
     return null;
   } catch (error) {
     console.error('❌ 최근 재생 곡 API 오류:');
@@ -135,33 +134,31 @@ async function getRecentTrack(accessToken) {
   }
 }
 
-// 사용자 프로필 확인 (디버깅용)
-async function getUserProfile(accessToken) {
+// 이미지를 Base64로 다운로드
+async function downloadImageAsBase64(imageUrl) {
   try {
-    console.log('👤 사용자 프로필 확인 중...');
-    const response = await axios.get('https://api.spotify.com/v1/me', {
-      headers: {
-        'Authorization': 'Bearer ' + accessToken
-      }
+    console.log('🖼️  앨범 커버 다운로드 중...');
+    const response = await axios.get(imageUrl, {
+      responseType: 'arraybuffer',
+      timeout: 10000 // 10초 타임아웃
     });
     
-    console.log('✅ 사용자 프로필:');
-    console.log(`   이름: ${response.data.display_name}`);
-    console.log(`   국가: ${response.data.country}`);
-    console.log(`   제품: ${response.data.product}`);
-    console.log(`   팔로워: ${response.data.followers.total}`);
+    const base64 = Buffer.from(response.data, 'binary').toString('base64');
+    const mimeType = response.headers['content-type'] || 'image/jpeg';
     
-    return response.data;
+    console.log('✅ 앨범 커버 다운로드 완료');
+    console.log(`   크기: ${Math.round(response.data.length / 1024)}KB`);
+    console.log(`   타입: ${mimeType}`);
+    
+    return `data:${mimeType};base64,${base64}`;
   } catch (error) {
-    console.error('❌ 사용자 프로필 오류:');
-    console.error('   상태코드:', error.response?.status);
-    console.error('   응답 데이터:', JSON.stringify(error.response?.data, null, 2));
+    console.error('❌ 이미지 다운로드 실패:', error.message);
     return null;
   }
 }
 
 // SVG 위젯 생성
-function generateSVG(track) {
+async function generateSVG(track) {
   const width = 400;
   const height = 120;
   
@@ -187,6 +184,43 @@ function generateSVG(track) {
   
   const status = track.isPlaying ? '🎵 Now Playing' : '🎵 Recently Played';
   const statusColor = track.isPlaying ? STYLE_CONFIG.accentColor : '#888888';
+  
+  // 앨범 커버 처리
+  let albumCoverElement = '';
+  if (track.image) {
+    try {
+      const base64Image = await downloadImageAsBase64(track.image);
+      if (base64Image) {
+        albumCoverElement = `
+          <defs>
+            <clipPath id="albumCover">
+              <rect x="15" y="15" width="90" height="90" rx="4"/>
+            </clipPath>
+          </defs>
+          <image x="15" y="15" width="90" height="90" href="${base64Image}" clip-path="url(#albumCover)"/>
+        `;
+        console.log('✅ 앨범 커버 임베드 완료');
+      } else {
+        // 이미지 다운로드 실패 시 기본 플레이스홀더
+        albumCoverElement = `
+          <rect x="15" y="15" width="90" height="90" fill="#333" rx="4"/>
+          <text x="60" y="65" text-anchor="middle" font-family="${STYLE_CONFIG.fontFamily}" font-size="30px" fill="#666">🎵</text>
+        `;
+      }
+    } catch (error) {
+      console.error('❌ 앨범 커버 처리 중 오류:', error.message);
+      albumCoverElement = `
+        <rect x="15" y="15" width="90" height="90" fill="#333" rx="4"/>
+        <text x="60" y="65" text-anchor="middle" font-family="${STYLE_CONFIG.fontFamily}" font-size="30px" fill="#666">🎵</text>
+      `;
+    }
+  } else {
+    // 이미지가 없을 때 기본 플레이스홀더
+    albumCoverElement = `
+      <rect x="15" y="15" width="90" height="90" fill="#333" rx="4"/>
+      <text x="60" y="65" text-anchor="middle" font-family="${STYLE_CONFIG.fontFamily}" font-size="30px" fill="#666">🎵</text>
+    `;
+  }
 
   return `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
@@ -204,9 +238,8 @@ function generateSVG(track) {
       <!-- 배경 -->
       <rect width="100%" height="100%" class="bg" rx="8"/>
       
-      <!-- 앨범 커버 (placeholder) -->
-      <rect x="15" y="15" width="90" height="90" fill="#333" rx="4"/>
-      <text x="60" y="65" text-anchor="middle" font-family="${STYLE_CONFIG.fontFamily}" font-size="30px" fill="#666">🎵</text>
+      <!-- 앨범 커버 -->
+      ${albumCoverElement}
       
       <!-- 곡 정보 -->
       <text x="120" y="25" class="status">${status}</text>
@@ -220,8 +253,34 @@ function generateSVG(track) {
           <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
         </circle>
       ` : ''}
+      
+      <!-- 앨범 커버 테두리 (선택사항) -->
+      <rect x="15" y="15" width="90" height="90" fill="none" stroke="#444" stroke-width="1" rx="4"/>
     </svg>
   `;
+}
+
+// 사용자 프로필 확인 (디버깅용)
+async function getUserProfile(accessToken) {
+  try {
+    console.log('👤 사용자 프로필 확인 중...');
+    const response = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        'Authorization': 'Bearer ' + accessToken
+      }
+    });
+    
+    console.log('✅ 사용자 프로필:');
+    console.log(`   이름: ${response.data.display_name}`);
+    console.log(`   국가: ${response.data.country}`);
+    console.log(`   제품: ${response.data.product}`);
+    
+    return response.data;
+  } catch (error) {
+    console.error('❌ 사용자 프로필 오류:');
+    console.error('   상태코드:', error.response?.status);
+    return null;
+  }
 }
 
 // 메인 함수
@@ -262,17 +321,14 @@ async function main() {
   if (track) {
     console.log('✅ 곡 정보 확보 성공');
     console.log(`🎵 ${track.artist} - ${track.name} (${track.isPlaying ? '재생 중' : '최근 재생'})`);
+    console.log(`🖼️  앨범 커버: ${track.image ? '있음' : '없음'}`);
   } else {
     console.log('❌ 곡 정보를 가져올 수 없음');
-    console.log('🔍 가능한 원인:');
-    console.log('   1. Spotify에서 음악을 재생한 적이 없음');
-    console.log('   2. 프로필이 비공개로 설정됨');
-    console.log('   3. API 권한 부족');
   }
   
   // SVG 생성
   console.log('\n--- SVG 위젯 생성 ---');
-  const svg = generateSVG(track);
+  const svg = await generateSVG(track);
   
   // 파일 저장
   console.log('💾 파일 저장 중...');
