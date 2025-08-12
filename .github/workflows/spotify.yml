@@ -2,7 +2,7 @@ name: Update Spotify
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 5분마다 실행
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,8 +12,8 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Update Spotify
-        uses: kittinan/spotify-github-profile@master
+        uses: JeffreyCA/spotify-recently-played-readme@main
         with:
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          spotify_client_id: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          spotify_client_secret: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          spotify_refresh_token: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
