@@ -35,9 +35,11 @@ jobs:
         SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
         
     - name: Commit and push changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add .
-        git commit -m "🎵 Update Spotify widget" || echo "변경사항 없음"
-        git push origin main --force
+      uses: EndBug/add-and-commit@v9
+      with:
+        author_name: 'GitHub Action'
+        author_email: 'action@github.com'
+        message: '🎵 Update Spotify widget'
+        add: 'assets/spotify-widget.svg'
+        push: true
+        force: true
