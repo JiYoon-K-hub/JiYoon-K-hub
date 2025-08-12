@@ -2,7 +2,7 @@ name: Update Custom Spotify Widget
 
 on:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/2 * * * *'  # 2분마다 실행
   workflow_dispatch:  # 수동 실행 가능
 
 # 권한 추가!
