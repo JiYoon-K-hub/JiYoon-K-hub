@@ -66,17 +66,23 @@ async function getCurrentTrack(accessToken) {
     }
     
     if (response.data && response.data.item) {
+      // 앨범 정보 상세 로깅 추가
       console.log('✅ 현재 재생 중인 곡 발견:');
       console.log(`   곡명: ${response.data.item.name}`);
       console.log(`   아티스트: ${response.data.item.artists[0].name}`);
-      console.log(`   앨범 커버: ${response.data.item.album.images[0]?.url || '없음'}`);
+      console.log(`   앨범명: ${response.data.item.album.name}`);
+      console.log(`   앨범 이미지 배열:`, response.data.item.album.images);
       console.log(`   재생 상태: ${response.data.is_playing ? '재생 중' : '일시정지'}`);
+      
+      // 앨범 이미지 URL 추출
+      const albumImage = response.data.item.album.images?.[0]?.url;
+      console.log(`   앨범 커버 URL: ${albumImage || '없음'}`);
       
       return {
         name: response.data.item.name,
         artist: response.data.item.artists[0].name,
         album: response.data.item.album.name,
-        image: response.data.item.album.images[0]?.url,
+        image: albumImage,
         url: response.data.item.external_urls.spotify,
         isPlaying: response.data.is_playing
       };
@@ -85,10 +91,7 @@ async function getCurrentTrack(accessToken) {
     console.log('ℹ️  응답은 왔지만 곡 데이터가 없음');
     return null;
   } catch (error) {
-    console.error('❌ 현재 재생 곡 API 오류:');
-    console.error('   상태코드:', error.response?.status);
-    console.error('   응답 데이터:', JSON.stringify(error.response?.data, null, 2));
-    console.error('   오류 메시지:', error.message);
+    console.error('❌ 현재 재생 곡 API 오류:', error.message);
     return null;
   }
 }
