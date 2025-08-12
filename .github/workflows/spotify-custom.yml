@@ -38,6 +38,11 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git pull origin main --rebase  # rebase로 깔끔하게 병합
         git add .
-        git diff --staged --quiet || git commit -m "🎵 Update Spotify widget"
-        git push
+        if ! git diff --staged --quiet; then
+          git commit -m "🎵 Update Spotify widget"
+          git push origin main
+        else
+          echo "변경사항이 없어서 커밋하지 않습니다."
+        fi
