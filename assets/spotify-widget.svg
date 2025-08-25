@@ -26,7 +26,7 @@
       
       <!-- 곡 정보 -->
       <text x="120" y="25" class="status">🎵 Now Playing</text>
-      <text x="120" y="45" class="title">DUMB</text>
+      <text x="120" y="45" class="title">EAT MY ACID</text>
       <text x="120" y="65" class="artist">by EMM</text>
       <text x="120" y="85" class="album">BLACK DIAMOND</text>
       
