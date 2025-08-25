@@ -6,7 +6,7 @@
           .title { font-family: Segoe UI, Arial, sans-serif; font-size: 16px; fill: #ffffff; font-weight: bold; }
           .artist { font-family: Segoe UI, Arial, sans-serif; font-size: 14px; fill: #cccccc; }
           .album { font-family: Segoe UI, Arial, sans-serif; font-size: 12px; fill: #888888; }
-          .status { font-family: Segoe UI, Arial, sans-serif; font-size: 12px; fill: #1db954; }
+          .status { font-family: Segoe UI, Arial, sans-serif; font-size: 12px; fill: #888888; }
           .link { cursor: pointer; }
         </style>
       </defs>
@@ -25,16 +25,12 @@
         
       
       <!-- 곡 정보 -->
-      <text x="120" y="25" class="status">🎵 Now Playing</text>
-      <text x="120" y="45" class="title">EAT MY ACID</text>
+      <text x="120" y="25" class="status">🎵 Recently Played</text>
+      <text x="120" y="45" class="title">MASTERMIND</text>
       <text x="120" y="65" class="artist">by EMM</text>
       <text x="120" y="85" class="album">BLACK DIAMOND</text>
       
       <!-- 재생 중일 때 애니메이션 -->
-      
-        <circle cx="370" cy="25" r="4" fill="#1db954">
-          <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
       
       
       <!-- 앨범 커버 테두리 (선택사항) -->
